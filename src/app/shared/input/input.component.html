@@ -1,0 +1,30 @@
+<input
+  [type]="type"
+  class="block w-full py-1.5 px-3 text-gray-200 border border-gray-400 transition duration-500 focus:outline-none rounded bg-transparent focus:border-indigo-400"
+  [placeholder]="placeHolder"
+  [formControl]="control"
+/>
+<ng-container *ngIf="control.touched && control.dirty">
+  <p *ngIf="control.errors?.required" class="text-red-400">
+    This is a mandatory field
+  </p>
+  <p *ngIf="control.errors?.minlength " class="text-red-400">
+    Minimum
+    {{ control.errors?.minlength.requiredLength }} characters
+  </p>
+  <p *ngIf="control.errors?.email" class="text-red-400">
+    Enter a valid email address
+  </p>
+  <p *ngIf="control.errors?.min && placeHolder !== 'Phone Number'" class="text-red-400">
+    Too Low
+  </p>
+  <p *ngIf="control.errors?.max && placeHolder !== 'Phone Number'" class="text-red-400">
+    Too High
+  </p>
+  <p *ngIf="control.errors?.pattern" class="text-red-400">
+    Minimum 8 characters,must contain at least 1 uppercase letter, 1 lowercase letter, and 1 number,can contain special characters
+  </p>
+   <p *ngIf="control.errors?.min || control.errors?.max && placeHolder === 'Phone Number' " class="text-red-400">
+    Phone number must be exactly 10 digits
+  </p>
+</ng-container>
