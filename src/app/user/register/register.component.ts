@@ -1,53 +1,78 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup,FormControl,Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
-export class RegisterComponent{
-  alertMsg = 'asd';
+export class RegisterComponent {
+  alertMsg = '';
   showAlert = false;
   alertColor = 'blue';
+  inProgress = false;
 
-  name = new FormControl('',[
+  constructor(private auth: AngularFireAuth) {
+
+  }
+  name = new FormControl('', [
     Validators.required,
     Validators.minLength(3)
   ])
-  email = new FormControl('',[
+  email = new FormControl('', [
     Validators.required,
     Validators.email
   ])
-  age = new FormControl('',[
+  age = new FormControl('', [
     Validators.required,
     Validators.min(7),
     Validators.max(120)
   ])
-  password = new FormControl('',[
+  password = new FormControl('', [
     Validators.required,
-    Validators.pattern("^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$")
+    Validators.pattern('^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$')
   ])
-  confirm_password = new FormControl('',[
+  confirm_password = new FormControl('', [
     Validators.required
   ])
-  phoneNumber = new FormControl('',[
+  phoneNumber = new FormControl('', [
     Validators.required,
     Validators.min(1000000000),
     Validators.max(9999999999)
   ])
 
   registerForm = new FormGroup({
-    name : this.name,
-    email  :this.email,
-    age : this.age,
-    password : this.password,
-    confirm_password : this.confirm_password,
-    phoneNumber : this.phoneNumber
+    name: this.name,
+    email: this.email,
+    age: this.age,
+    password: this.password,
+    confirm_password: this.confirm_password,
+    phoneNumber: this.phoneNumber
   })
-  register(){
+
+
+  async register() {
     this.showAlert = true;
     this.alertColor = 'blue';
-    this.alertMsg = 'Please Wait! We are selling your personal information :)'
+    this.alertMsg = 'Please Wait! We are selling your personal information :)';
+    const { email, password } = this.registerForm.value;
+
+    try {
+      this.inProgress = true;
+      const userCred = await this.auth.createUserWithEmailAndPassword(email, password);
+    }
+
+    catch (e) {
+      this.inProgress = false;
+      this.alertColor = 'red';
+      this.alertMsg = 'Task failed successfully :(';
+      console.error(e);
+      return
+    }
+
+    this.alertColor = 'green';
+    this.alertMsg = 'Info sold successfully ;)';
+
   }
 
 }
