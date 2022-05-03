@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AuthService } from 'src/app/services/auth.service';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -12,7 +12,9 @@ export class RegisterComponent {
   alertColor = 'blue';
   inProgress = false;
 
-  constructor(private auth: AngularFireAuth) {
+  constructor(
+    private auth: AuthService
+  ) {
 
   }
   name = new FormControl('', [
@@ -49,7 +51,7 @@ export class RegisterComponent {
     confirm_password: this.confirm_password,
     phoneNumber: this.phoneNumber
   })
-
+  
 
   async register() {
     this.showAlert = true;
@@ -59,7 +61,7 @@ export class RegisterComponent {
 
     try {
       this.inProgress = true;
-      const userCred = await this.auth.createUserWithEmailAndPassword(email, password);
+      await this.auth.createuser(this.registerForm.value)
     }
 
     catch (e) {
