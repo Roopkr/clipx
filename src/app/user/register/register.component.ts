@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
+import { RegisterValidator } from '../Validators/register-validator';
+import { EmailTaken } from '../Validators/email-taken';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -13,7 +15,8 @@ export class RegisterComponent {
   inProgress = false;
 
   constructor(
-    private auth: AuthService
+    private auth: AuthService,
+    private emailTaken: EmailTaken
   ) {
 
   }
@@ -24,7 +27,7 @@ export class RegisterComponent {
   email = new FormControl('', [
     Validators.required,
     Validators.email
-  ])
+  ],[this.emailTaken.validate])
   age = new FormControl('', [
     Validators.required,
     Validators.min(7),
@@ -50,8 +53,8 @@ export class RegisterComponent {
     password: this.password,
     confirm_password: this.confirm_password,
     phoneNumber: this.phoneNumber
-  })
-  
+  }, [RegisterValidator.match('password', 'confirm_password')])
+
 
   async register() {
     this.showAlert = true;
@@ -74,7 +77,7 @@ export class RegisterComponent {
 
     this.alertColor = 'green';
     this.alertMsg = 'Info sold successfully ;)';
-
+    
   }
 
 }
