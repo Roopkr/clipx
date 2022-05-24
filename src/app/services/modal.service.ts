@@ -31,6 +31,7 @@ export class ModalService {
   }
 
   toggleModalVisibility(id: string) {
+    
     let modal = this.modals.find(obj => obj.id == id);
     if (modal) {
       modal.modalVisibility = !modal?.modalVisibility;
